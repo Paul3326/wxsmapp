@@ -15,3 +15,55 @@
       });
     }.bind(this), 1000);
   },
+
+
+ /** 实时倒计时法
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
+    var second;
+    var IsFristFlag = true;
+    var CountDown_Start_sec = 0;
+    var CountDown_End_sec = 0;
+
+    var interval = setInterval(function () {
+      second = Number(util.CountDownTime(new Date())) + 1;
+      if (IsFristFlag)
+      {
+        IsFristFlag = false;
+        CountDown_Start_sec = second;
+        CountDown_End_sec = Number(CountDown_Start_sec) + Number(this.data.CountDown_sec);
+      }
+
+      if ((CountDown_End_sec > 0)&&(CountDown_End_sec <= 60)) {
+        if (second < CountDown_End_sec){
+          this.data.CountDown_sec = CountDown_End_sec - second;
+        }
+        else {
+          this.data.CountDown_sec = 0;
+          clearInterval(interval);
+        }
+      }
+      else{
+        if (60 == second){
+          CountDown_End_sec %= 60; 
+          second = 0;
+        }
+        this.data.CountDown_sec = CountDown_End_sec - second;
+      }
+     
+      console.log("CountDown_End_sec ", CountDown_End_sec);
+      console.log("second ", second);
+    }.bind(this), 1000);
+
+    var disp = setInterval(function () {
+      if (this.data.CountDown_sec >= 0) {
+        this.setData({
+          CountDown_sec: this.data.CountDown_sec,
+        });
+      }
+      else {
+        clearInterval(disp);
+      }
+    }.bind(this), 100);
+  },
